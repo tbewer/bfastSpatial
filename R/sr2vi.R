@@ -62,7 +62,12 @@ sr2vi <- function(x, vi='ndvi', e=NULL, mask=NULL, keep=c(0), L=0.5, ...) {
         }
         
         if(!is.null(mask)) {
-            vi <- overlay(x=vi, y=mask, fun=clean, ...)
+            if(freq(mask,value=0) + freq(mask,value=1) == 0)) {
+                vi[] <- NA
+            } 
+            else {
+                vi <- overlay(x=vi, y=mask, fun=clean, ...)
+            }
         }
         return(vi)
         
@@ -124,10 +129,14 @@ sr2vi <- function(x, vi='ndvi', e=NULL, mask=NULL, keep=c(0), L=0.5, ...) {
         if(is.null(mask)) {
             vi <- do.call(what=raster::overlay, args=doListDots)
         } else {
-            previ <- do.call(what=raster::overlay, args=doList)
-            vi <- overlay(x=previ, y=mask, fun=clean, ...)
+            if(freq(mask,value=0) + freq(mask,value=1) == 0)) {
+                vi[] <- NA
+            }
+            else {
+                previ <- do.call(what=raster::overlay, args=doList)
+                vi <- overlay(x=previ, y=mask, fun=clean, ...)
+            }    
         }
-        
         return(vi)
     }
 }
